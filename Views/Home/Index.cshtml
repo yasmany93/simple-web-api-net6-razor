@@ -1,0 +1,38 @@
+﻿@*@using PagedList;
+@using PagedList.Mvc;*@
+@model List<WebApplication2.Models.UserDTO>;
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+ @Html.ActionLink("Create", "Create", null, new {@class="btn"})
+
+<h2>Users</h2>
+
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Gender</th>
+        <th>Active</th>
+        <th></th>
+    </tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Name</td>
+            <td>@user.Email</td>
+            <td>@user.Gender</td>
+            <td>@user.Status</td>
+            <td>@Html.ActionLink("Delete", "Delete", null, new { @class="btn btn-warning", id = user.Id})</td>
+            
+
+        </tr>
+    }
+
+</table>
+
+@*<br/>
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount*@
+@*@Html.PagedListPager(Model, page => Url.Action("Index", new {page}))*@
