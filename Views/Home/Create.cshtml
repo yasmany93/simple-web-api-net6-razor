@@ -6,43 +6,35 @@
 @using (Html.BeginForm("Create", "Home", null, FormMethod.Post, false, new { enctype = "multipart/form-data" }))
 {
 
-    <div style="display:flex; wrap:flex-wrap">
+    <div class="form-control">
         <div width="100%">
             @Html.LabelFor(s => s.Name, "Name")
-            @Html.EditorFor(s => s.Name, new {@class="form-control"})
+            @Html.EditorFor(s => s.Name)
             @Html.ValidationMessageFor(s => s.Name)
         </div>
 
         <div width="100%">
             @Html.LabelFor(s => s.Email, "Email")
-            @Html.EditorFor(s => s.Email, new {@class="form-control"})
+            @Html.EditorFor(s => s.Email)
             @Html.ValidationMessageFor(s => s.Email)
         </div>
 
         <div width="100%">
             @Html.LabelFor(s => s.Gender, "Gender")
-            @Html.EditorFor(s => s.Gender, new {@class="form-control"})
+            @Html.EditorFor(s => s.Gender)
             @Html.ValidationMessageFor(s => s.Gender)
         </div>
 
         <div width="100%">
             @Html.LabelFor(s => s.Status, "Status")
-            @Html.EditorFor(s => s.Status, new {@class="form-control"})
+            @Html.EditorFor(s => s.Status)
             @Html.ValidationMessageFor(s => s.Status)
         </div>
 
         <div width="100%">
             <input class="btn btn-primary" type="submit" value="Create" />
-            @Html.ActionLink("Cancel", "Index", null, new {@class="btn"})
+            @Html.ActionLink("Cancel", "Index", null, null, new {@class="btn btn-secondary"})
         </div>
-
-
-
-
-
-
-
-
 
     </div>
 

@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text;
 using PagedList;
+using DataAccessLayer;
 
 namespace WebApplication2.Controllers
 {
@@ -24,8 +25,8 @@ namespace WebApplication2.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly string ACCESS_TOKEN = "00dd46b8c8c0ae160d8e800781503689815a98b634817ea022cd1c7ea099f3e0";
-        private readonly string URL = "https://gorest.co.in/public/v2/users";
+        private readonly string ACCESS_TOKEN = APIConectionInfo.ACCESS_TOKEN;
+        private readonly string URL = APIConectionInfo.URL;
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -34,7 +35,7 @@ namespace WebApplication2.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<UserDTO> usersList;
+            List<UserDTO> usersList = new List<UserDTO>();
             using (var httpClient = new HttpClient())
             {
                 using (var response = await httpClient.GetAsync($"{URL}?access-token={ACCESS_TOKEN}"))
@@ -81,8 +82,9 @@ namespace WebApplication2.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
+            //if(id == null) 
             var user = new UserDTO
             {
                 Id = 0,
