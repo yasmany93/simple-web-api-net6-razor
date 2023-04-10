@@ -1,42 +1,46 @@
 ﻿@model WebApplication2.Models.UserDTO
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Register";
 }
 
 @using (Html.BeginForm("Create", "Home", null, FormMethod.Post, false, new { enctype = "multipart/form-data" }))
 {
-
-    <div class="form-control">
-        <div width="100%">
-            @Html.LabelFor(s => s.Name, "Name")
-            @Html.EditorFor(s => s.Name)
+    <div class="register-form align-content-center">
+        <div class="form-group" style="margin-top:2%;">
+            @Html.LabelFor(s => s.Name, "Name", new { @class="control-label"})
+            @Html.TextBoxFor(s => s.Name, null, new {@class="form-control"})
             @Html.ValidationMessageFor(s => s.Name)
         </div>
 
-        <div width="100%">
-            @Html.LabelFor(s => s.Email, "Email")
-            @Html.EditorFor(s => s.Email)
+        <div class="form-group" style="margin-top:2%;">
+            @Html.LabelFor(s => s.Email, "Email", new { @class="control-label"})
+            @Html.TextBoxFor(s => s.Email, null, new {@class="form-control"})
             @Html.ValidationMessageFor(s => s.Email)
         </div>
 
-        <div width="100%">
-            @Html.LabelFor(s => s.Gender, "Gender")
-            @Html.EditorFor(s => s.Gender)
+        <div class="form-group" style="margin-top:2%;">
+            @Html.LabelFor(s => s.Gender, "Gender", new { @class="control-label"})
+            @Html.DropDownListFor(s => s.Gender, (SelectList)ViewBag.Genders,"Select Gender", new {@class="form-control"})
             @Html.ValidationMessageFor(s => s.Gender)
         </div>
 
-        <div width="100%">
-            @Html.LabelFor(s => s.Status, "Status")
-            @Html.EditorFor(s => s.Status)
+        <div class="form-group" style="margin-top:2%;">
+            @Html.LabelFor(s => s.Status, "Status", new { @class="control-label"})
+            @Html.DropDownListFor(s => s.Status, (SelectList)ViewBag.Status, "Select Status", new {@class="form-control"})
             @Html.ValidationMessageFor(s => s.Status)
         </div>
 
-        <div width="100%">
-            <input class="btn btn-primary" type="submit" value="Create" />
-            @Html.ActionLink("Cancel", "Index", null, null, new {@class="btn btn-secondary"})
-        </div>
+        <div class="form-group">
+            <div style="margin-top:2%;">
+                <input class="btn btn-success" type="submit" value="Create" />
+                @Html.ActionLink("Cancel", "Index", null, null, new {@class="btn btn-secondary"})
+            </div>
 
+        </div>
     </div>
 
+}
 
+@section styles{
+<link href="@Url.Content("~/css/register.css")" rel="stylesheet" type="text/css" />
 }

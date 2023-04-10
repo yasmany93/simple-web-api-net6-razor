@@ -4,8 +4,11 @@ using WebApplication2.Models;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text;
-using PagedList;
+//using PagedList;
 using DataAccessLayer;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using DataAccessLayer.Entities;
+using AutoMapper;
 
 namespace WebApplication2.Controllers
 {
@@ -28,6 +31,18 @@ namespace WebApplication2.Controllers
         private readonly string ACCESS_TOKEN = APIConectionInfo.ACCESS_TOKEN;
         private readonly string URL = APIConectionInfo.URL;
 
+        private readonly List<SelectListItem> genders = new List<SelectListItem>
+            {
+                new SelectListItem {Text = Gender.Male.ToString(), Value = ((int)Gender.Male).ToString()},
+                new SelectListItem {Text = Gender.Female.ToString(), Value = ((int)Gender.Female).ToString()}
+            };
+
+        private readonly List<SelectListItem> status = new List<SelectListItem>
+            {
+                new SelectListItem {Text = Status.Active.ToString(), Value = Status.Active.ToString()},
+                new SelectListItem {Text = Status.Inactive.ToString(), Value = Status.Inactive.ToString()}
+            };
+
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -35,7 +50,7 @@ namespace WebApplication2.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<UserDTO> usersList = new List<UserDTO>();
+            List<User> usersList = new List<User>();
             using (var httpClient = new HttpClient())
             {
                 using (var response = await httpClient.GetAsync($"{URL}?access-token={ACCESS_TOKEN}"))
@@ -45,7 +60,7 @@ namespace WebApplication2.Controllers
                         PropertyNameCaseInsensitive = true
                     };
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    usersList = JsonSerializer.Deserialize<List<UserDTO>>(apiResponse, options);
+                    usersList = JsonSerializer.Deserialize<List<User>>(apiResponse, options);
                 }
             }
 
@@ -54,19 +69,30 @@ namespace WebApplication2.Controllers
 
         public async Task<IActionResult> Create()
         {
+            ViewBag.Genders = new SelectList(genders, "Value", "Text");
+
+            ViewBag.Status = new SelectList(status, "Value", "Text");
+
             var user = new UserDTO
             {
                 Name = "",
                 Email = "",
-                Gender = "",
-                Status = ""
+                Gender = null,
+                Status = null
             };
+
             return View(user);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(UserDTO user)
         {
+            User _user = new User { 
+                Name = user.Name,
+                Email = user.Email,
+                Gender = user.Gender?.ToString(),
+                Status = user.Status?.ToString()
+            };
 
             using (var httpClient = new HttpClient())
             {
@@ -74,7 +100,7 @@ namespace WebApplication2.Controllers
                 {
                     PropertyNamingPolicy = new ToLowerNamingPolicy()
                 };
-                var json = JsonSerializer.Serialize<UserDTO>(user, options).ToString();
+                var json = JsonSerializer.Serialize<User>(_user, options).ToString();
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 await httpClient.PostAsync($"{URL}?access-token={ACCESS_TOKEN}", content);
 
@@ -85,7 +111,7 @@ namespace WebApplication2.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             //if(id == null) 
-            var user = new UserDTO
+            var user = new User
             {
                 Id = 0,
                 Name = "",
@@ -103,7 +129,7 @@ namespace WebApplication2.Controllers
                         PropertyNameCaseInsensitive = true
                     };
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    user = JsonSerializer.Deserialize<UserDTO>(apiResponse, options);
+                    user = JsonSerializer.Deserialize<User>(apiResponse, options);
                 }
             }
 
@@ -111,7 +137,7 @@ namespace WebApplication2.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(UserDTO user)
+        public async Task<IActionResult> Delete(User user)
         {
             using (var httpClient = new HttpClient())
             {
